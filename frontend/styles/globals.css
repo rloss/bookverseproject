@@ -1,0 +1,4 @@
+/* Tailwind base 설정 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

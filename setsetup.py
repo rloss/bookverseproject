@@ -16,39 +16,10 @@ def create_structure(base_path, structure):
 # 전체 프로젝트 디렉토리 구조 정의
 project_structure = {
     "frontend": {
+        ".env.production": "NEXT_PUBLIC_API_URL=https://bookverse-backend.onrender.com\nNODE_VERSION=18.17.1\nPORT=3000",
         "app": {
-            "layout.tsx": "export default function Layout({ children }: { children: React.ReactNode }) {\n  return <>{children}</>;\n}",
-            "page.tsx": "export default function Home() {\n  return <main>홈입니다</main>;\n}",
-            "groups": {
-                "[groupId]": {
-                    "page.tsx": "export default function GroupDashboard() {\n  return <div>그룹 대시보드</div>;\n}",
-                    "posts": {
-                        "[postId]": {
-                            "page.tsx": "export default function GroupPostDetail() {\n  return <div>그룹 글 상세</div>;\n}"
-                        }
-                    },
-                    "write": {
-                        "page.tsx": "export default function GroupWrite() {\n  return <div>그룹 글쓰기</div>;\n}"
-                    },
-                    "me": {
-                        "page.tsx": "export default function GroupMyPage() {\n  return <div>그룹 내 마이페이지</div>;\n}"
-                    }
-                }
-            },
-            "my": {
-                "page.tsx": "export default function MyPage() {\n  return <div>전역 마이페이지</div>;\n}"
-            },
-            "posts": {
-                "[postId]": {
-                    "page.tsx": "export default function PersonalPostDetail() {\n  return <div>개인 글 상세</div>;\n}"
-                }
-            },
-            "write": {
-                "page.tsx": "export default function PersonalWrite() {\n  return <div>개인 글쓰기</div>;\n}"
-            },
-            "login": {"page.tsx": "export default function Login() {\n  return <div>로그인</div>;\n}"},
-            "signup": {"page.tsx": "export default function Signup() {\n  return <div>회원가입</div>;\n}"},
-            "books": {"page.tsx": "export default function Books() {\n  return <div>도서 탐색</div>;\n}"}
+            "layout.tsx": "export default function Layout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang=\"en\">\n      <body>\n        <header style={{ padding: '1rem', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>\n          Bookverse\n        </header>\n        <main style={{ padding: '1rem' }}>{children}</main>\n      </body>\n    </html>\n  );\n}",
+            "page.tsx": "export default function Home() {\n  return (\n    <div style={{ textAlign: 'center', marginTop: '10%' }}>\n      <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Welcome to Bookverse 📚</h1>\n      <p style={{ marginTop: '1rem' }}>당신의 독서 모임, 지금 시작하세요.</p>\n    </div>\n  );\n}"
         },
         "components": {
             "layout": {},
@@ -70,7 +41,7 @@ project_structure = {
     },
     "backend": {
         "app": {
-            "main.py": "from fastapi import FastAPI\nfrom app.api.v1 import users, posts\n\napp = FastAPI()\n\napp.include_router(users.router, prefix='/api/v1/users')\napp.include_router(posts.router, prefix='/api/v1/posts')",
+            "main.py": "from fastapi import FastAPI\nfrom app.api.v1 import users, posts\nfrom fastapi.middleware.cors import CORSMiddleware\n\napp = FastAPI()\n\n# CORS\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n\n# Routers\napp.include_router(users.router, prefix='/api/v1/users')\napp.include_router(posts.router, prefix='/api/v1/posts')",
             "api": {
                 "v1": {
                     "users.py": "from fastapi import APIRouter\nrouter = APIRouter()\n@router.get('/')\ndef get_users(): return ['user1', 'user2']",
@@ -134,8 +105,8 @@ project_structure = {
         ".env": "DATABASE_URL=postgresql://user:pass@localhost:5432/app"
     },
     ".env.example": "DATABASE_URL=postgresql://user:pass@localhost:5432/app",
-    ".gitignore": "__pycache__/\nnode_modules/\n.env\n.next\n*.pyc",
-    "README.md": "# 독서모임 플랫폼 초기 구조",
+    ".gitignore": "__pycache__\nnode_modules\n.env\n.next\n*.pyc",
+    "README.md": "# Bookverse Fullstack Monorepo\n\n## 📦 구조\n- frontend/: Next.js + Tailwind + API 연동\n- backend/: FastAPI + PostgreSQL + REST API\n\n## 🧪 배포 (Render 기준)\n- frontend → Web Service: root directory 'frontend' 지정\n- backend → Web Service: root directory 'backend' 지정",
     "docker-compose.yml": "version: '3.8'\nservices:\n  backend:\n    build: ./backend\n    ports:\n      - '8000:8000'\n  frontend:\n    build: ./frontend\n    ports:\n      - '3000:3000'"
 }
 
